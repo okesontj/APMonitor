@@ -13,7 +13,7 @@ import sys
 ver = sys.version_info[0]
 #print('Version: '+str(ver))
 if ver==2:  # Python 2
-    import urllib    
+    import urllib.request, urllib.parse, urllib.error    
 else:       # Python 3+
     import urllib.request, urllib.parse, urllib.error
     #import socket
@@ -30,8 +30,8 @@ if ver==2:  # Python 2
             url_base = string.strip(server) + '/online/apm_line.php'
             app = app.lower()
             app.replace(" ", "")
-            params = urllib.urlencode({'p': app, 'a': aline})
-            f = urllib.urlopen(url_base, params)
+            params = urllib.parse.urlencode({'p': app, 'a': aline})
+            f = urllib.request.urlopen(url_base, params)
             # Stream solution output
             if(aline=='solve'):
                 line = ''
@@ -83,7 +83,7 @@ if ver==2:  # Python 2
            server   = address of server'''
         # get ip address for web-address lookup
         url_base = string.strip(server) + '/ip.php'
-        f = urllib.urlopen(url_base)
+        f = urllib.request.urlopen(url_base)
         ip = string.strip(f.read())
         return ip
 
@@ -98,7 +98,7 @@ if ver==2:  # Python 2
         app = app.lower()
         app.replace(" ","")
         url = string.strip(server) + '/online/' + ip + '_' + app + '/' + string.strip(mode) + '.t0'
-        f = urllib.urlopen(url)
+        f = urllib.request.urlopen(url)
         # Send request to web-server
         solution = f.read()
         return solution
@@ -113,7 +113,7 @@ if ver==2:  # Python 2
         app = app.lower()
         app.replace(" ","")
         url = string.strip(server) + '/online/' + ip + '_' + app + '/results.csv'
-        f = urllib.urlopen(url)
+        f = urllib.request.urlopen(url)
         # Send request to web-server
         solution = f.read()
 
@@ -127,7 +127,7 @@ if ver==2:  # Python 2
         # Use array package
         from array import array
         # Import CSV file from web server
-        with closing(urllib.urlopen(url)) as f:
+        with closing(urllib.request.urlopen(url)) as f:
             reader = csv.reader(f, delimiter=',')
             y={}
             for row in reader:
@@ -149,7 +149,7 @@ if ver==2:  # Python 2
         app = app.lower()
         app.replace(" ","")
         url = string.strip(server) + '/online/' + ip + '_' + app + '/' + filename
-        f = urllib.urlopen(url)
+        f = urllib.request.urlopen(url)
         # Send request to web-server
         file = f.read()
         # Write the file
@@ -232,7 +232,7 @@ if ver==2:  # Python 2
         try:
             f = open(filename, 'rb')
             reader = csv.reader(f)
-            headers = reader.next()
+            headers = next(reader)
             c = [float] * (len(headers))
             A = {}
             for h in headers:
@@ -281,8 +281,8 @@ if ver==2:  # Python 2
         url_base = string.strip(server) + '/online/get_tag.php'
         app = app.lower()
         app.replace(" ","")
-        params = urllib.urlencode({'p':app,'n':name})
-        f = urllib.urlopen(url_base,params)
+        params = urllib.parse.urlencode({'p':app,'n':name})
+        f = urllib.request.urlopen(url_base,params)
         # Send request to web-server
         value = eval(f.read())
         return value
@@ -296,8 +296,8 @@ if ver==2:  # Python 2
         url_base = string.strip(server) + '/online/meas.php'
         app = app.lower()
         app.replace(" ","")
-        params = urllib.urlencode({'p':app,'n':name+'.MEAS','v':value})
-        f = urllib.urlopen(url_base,params)
+        params = urllib.parse.urlencode({'p':app,'n':name+'.MEAS','v':value})
+        f = urllib.request.urlopen(url_base,params)
         # Send request to web-server
         response = f.read()
         return response
@@ -652,7 +652,7 @@ def solve(app,imode):
         load_data(server,app,app_data)
     except:
         # data file is optional
-        print('Optional data file ' + app + '.csv does not exist')
+        print(('Optional data file ' + app + '.csv does not exist'))
         pass
     
     # default options
